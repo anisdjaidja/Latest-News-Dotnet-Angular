@@ -12,16 +12,21 @@ builder.Services.Configure<HostOptions>(builder =>
 });
 
 // Add services to the container.
-builder.Services.AddDbContext<NewsContext>(options =>
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddDbContextFactory<NewsContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServer"));
-}); 
+});
+builder.Services.AddHostedService<NewsFetchService>();
+builder.Services.AddSingleton<NewsService>();
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHostedService<NewsFetchService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
