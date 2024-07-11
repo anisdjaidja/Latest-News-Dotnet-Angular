@@ -1,7 +1,6 @@
 ﻿using LatestNewsTestBackend.DataAcess;
 using LatestNewsTestBackend.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace LatestNewsTestBackend.Services
 {

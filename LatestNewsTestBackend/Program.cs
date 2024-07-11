@@ -12,6 +12,18 @@ builder.Services.Configure<HostOptions>(builder =>
     
 });
 
+/// Configure CORS policy to only allow our client app to hit our enpoints
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy",
+        builder =>
+        {
+            builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithOrigins("http://localhost:4200");
+        });
+});
 // Add services to the container.
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddDbContextFactory<NewsContext>(options =>
@@ -39,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("CORSPolicy");
 
 app.UseAuthorization();
 
