@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LatestNewsTestBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMG : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,12 @@ namespace LatestNewsTestBackend.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    category = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    language = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    country = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,7 +41,7 @@ namespace LatestNewsTestBackend.Migrations
                     urlToImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     publishedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sourceId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                    sourceId = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,8 +50,7 @@ namespace LatestNewsTestBackend.Migrations
                         name: "FK_Articles_Sources_sourceId",
                         column: x => x.sourceId,
                         principalTable: "Sources",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(

@@ -9,6 +9,7 @@ builder.Services.Configure<HostOptions>(builder =>
     builder.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
     builder.ServicesStartConcurrently = true;
     builder.ServicesStopConcurrently = false;
+    
 });
 
 // Add services to the container.
@@ -16,6 +17,7 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddDbContextFactory<NewsContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServer"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
 });
 builder.Services.AddHostedService<NewsFetchService>();
 builder.Services.AddSingleton<NewsService>();

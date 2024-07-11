@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LatestNewsTestBackend.Migrations
 {
     [DbContext(typeof(NewsContext))]
-    [Migration("20240710163831_initialMG")]
-    partial class initialMG
+    [Migration("20240711153336_init2")]
+    partial class init2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,37 +34,30 @@ namespace LatestNewsTestBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("author")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("publishedAt")
+                    b.Property<DateTime?>("publishedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("sourceId")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("title")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("urlToImage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
@@ -77,13 +70,32 @@ namespace LatestNewsTestBackend.Migrations
             modelBuilder.Entity("LatestNewsTestBackend.Models.NewsSource", b =>
                 {
                     b.Property<string>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("category")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("country")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("description")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("language")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("name")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("url")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
@@ -94,9 +106,7 @@ namespace LatestNewsTestBackend.Migrations
                 {
                     b.HasOne("LatestNewsTestBackend.Models.NewsSource", "source")
                         .WithMany()
-                        .HasForeignKey("sourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("sourceId");
 
                     b.Navigation("source");
                 });

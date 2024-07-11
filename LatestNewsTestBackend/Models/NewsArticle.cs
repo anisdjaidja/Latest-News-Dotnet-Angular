@@ -9,31 +9,30 @@ namespace LatestNewsTestBackend.Models
         public int id { get; set; }
 
         [DataType(DataType.Text)][MaxLength(255)]
-        public string title { get; set; }
+        public string? title { get; set; }
 
         [DataType(DataType.Text)][MaxLength(255)]
-        public string author { get; set; }
+        public string? author { get; set; }
 
         [DataType(DataType.Text)]
-        public string description { get; set; }
+        public string? description { get; set; }
 
 
         [DataType(DataType.Url)]
-        public string url { get; set; }
+        public string? url { get; set; }
         [DataType(DataType.ImageUrl)]
-        public string urlToImage { get; set; }
+        public string? urlToImage { get; set; }
 
 
         [DataType(DataType.DateTime)]
-        public DateTime publishedAt { get; set; }
+        public DateTime? publishedAt { get; set; }
 
         [DataType(DataType.Text)]
-        public string content { get; set; }
+        public string? content { get; set; }
 
-        
-        [Required][ForeignKey(nameof(sourceId))]
-        public NewsSource source { get; set; }
+        public virtual NewsSource source { get; set; }
         [MaxLength(255)]
-        public string sourceId { get; set; }
+        [ForeignKey(nameof(source))]
+        public string? sourceId { get; set; }
     }
 }
