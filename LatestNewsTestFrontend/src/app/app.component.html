@@ -6,29 +6,32 @@
 <!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
 <!-- * * * * * * * to get started with your project! * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<div class="Site-Container">
+  <div class="Title-container">
+    <p>Times - Belsons</p>
+  </div>
+  <div class="pagination-container">
+    <ngb-pagination size="lg" [(page)]="page" [pageSize]="pageSize"
+      [collectionSize]="articleService.allArticles.length" />
 
-<div class="container d-flex flex-column min-vh-100 justify-content-center align-items-center">
-  <h1>Angular client for ASP core NewsAPI</h1>
+  </div>
+  <div class="cards">
 
-  <button class="btn btn-lg btn-dark mt-3">
-    Reload the news !
-  </button>
+    @for (article of articleService.allArticles| slice: (page-1) * pageSize : page * pageSize; track article) {
+    <mat-card class="card" appearance="outlined" flex="15" ng-repeat="article of articleService.allArticles">
 
-  <div class="Grid-Host">
-
-    @for (article of articleService.allArticles; track article; let i = $index) {
-    <mat-card class="example-card" appearance="outlined" flex="15" ng-repeat="article of articleService.allArticles">
-
-      <img mat-card-image src={{article.urlToImage}}>
+      <img class="card-image" mat-card-image src={{article.urlToImage}}>
       <mat-card-header>
-        <mat-card-title>{{ article.title }}</mat-card-title>
+        <mat-card-title>
+          <h1>
+            {{ article.title }}
+          </h1>
+        </mat-card-title>
         <mat-card-subtitle>{{ article.publishedAt }}</mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content class="card-content">
-        <p>
-          {{ article.description }}
-        </p>
-      </mat-card-content>
+      <p class="card-content">
+        {{ article.description }}
+      </p>
       <mat-card-actions>
         <a mat-flat-button href={{article.url}} target="_blank">Read More ...</a>
       </mat-card-actions>
@@ -36,35 +39,4 @@
     }
   </div>
 
-  <div class="mh-500px w-100 overflow-auto d-inline-block mt-5 shadow">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Title</th>
-          <th scope="col">Autor</th>
-          <th scope="col">Description</th>
-          <th scope="col">Published</th>
-          <th scope="col">Source</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (article of articleService.allArticles; track article; let i = $index) {
-        <tr>
-          <td>{{ article.title }}</td>
-          <td>{{ article.description }}</td>
-          <td>{{ article.source }}</td>
-          <td>
-            <button class="btn btn-lg btn-dark me-3">
-              Update
-            </button>
-            <button class="btn btn-lg btn-outline-dark">
-              Delete
-            </button>
-          </td>
-        </tr>
-        }
-
-      </tbody>
-    </table>
-  </div>
 </div>

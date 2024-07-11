@@ -7,6 +7,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -14,13 +16,16 @@ import { MatButtonModule } from '@angular/material/button';
     MatCardModule,
     MatGridListModule,
     MatButtonModule,
+    CommonModule,
+    NgbPaginationModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
-  title = 'LatestNewsTestFrontend';
-
+  title = 'Latest News Test Frontend';
+  page = 1;
+  pageSize = 50;
   constructor(private httpclient: HttpClient, public articleService: ArticleService) { }
 
   ngOnInit(): void {

@@ -3,7 +3,8 @@ using LatestNewsTestBackend.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-/// Configuration for the background fetching thread to enable smooth silent data fetching
+/// Configuration for the background fetching thread 
+/// to enable smooth silent data fetching
 builder.Services.Configure<HostOptions>(builder =>
 {
     builder.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
@@ -12,7 +13,8 @@ builder.Services.Configure<HostOptions>(builder =>
     
 });
 
-/// Configure CORS policy to only allow our client app to hit our enpoints
+/// Configure CORS policy to only allow 
+/// our client app to hit our enpoints
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CORSPolicy",
@@ -26,6 +28,8 @@ builder.Services.AddCors(options =>
 });
 // Add services to the container.
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+/// Adding a DBContext factory instead of DbContext 
+/// ensures a managed 'on demand' accecibility for other services
 builder.Services.AddDbContextFactory<NewsContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServer"));
@@ -54,7 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("CORSPolicy");
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
