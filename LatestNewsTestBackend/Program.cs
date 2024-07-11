@@ -31,7 +31,7 @@ builder.Services.AddDbContextFactory<NewsContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServer"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
 });
-builder.Services.AddHostedService<NewsFetchService>();
+//builder.Services.AddHostedService<NewsFetchService>();
 builder.Services.AddSingleton<NewsService>();
 
 builder.Services.AddControllers();

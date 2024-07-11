@@ -90,7 +90,7 @@ namespace LatestNewsTestBackend.Services
                 var body = JsonConvert.DeserializeObject<NewsFetchResponse>(dataset);
                 foreach (var item in body.articles)
                 {
-                    if (item.source.id == null)
+                    if (string.IsNullOrWhiteSpace(item.source.id))
                     {
                         var newID = item.source.name.ToLower().Replace(' ', '-');
                         item.source.id = newID;
