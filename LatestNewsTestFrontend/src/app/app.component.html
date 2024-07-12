@@ -1,25 +1,52 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
+<!-- * * * * * * * * * * * *  Anis Djaidja * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * Software Engineer * * * * * * * * * * * -->
+<!-- * * * * * * * This is a hiring test for Belsons Tech  * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
 <div class="Site-Container">
+  <!-- * * Title * * -->
   <div class="Title-container">
     <p>Times - Belsons</p>
+  </div>
+  <!-- * * Top Section * * -->
+  <div class="forms-container">
+    <mat-form-field class="search-form-field">
+      <mat-label>Terms to lookup ...</mat-label>
+      <input matInput type="text" (input)="onInput($event)">
+      @if (searchText) {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="searchText=''">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </mat-form-field>
+    <mat-form-field class="filter-chip-list">
+      <mat-label>Filter sources</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Enter Sources">
+        @for (sourceFilter of limitedSources(); track sourceFilter) {
+        <mat-chip-row (removed)="remove(sourceFilter)" [editable]="true" (edited)="edit(sourceFilter, $event)"
+          [aria-description]="'press enter to edit ' + sourceFilter">
+          {{sourceFilter}}
+          <button matChipRemove [attr.aria-label]="'remove ' + sourceFilter">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+        <input placeholder="New search word..." [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
+      </mat-chip-grid>
+    </mat-form-field>
   </div>
   <div class="center-container">
     <ngb-pagination size="lg" [(page)]="page" [pageSize]="pageSize"
       [collectionSize]="articleService.allArticles.length" />
-
   </div>
+
+  <!-- * * News gallery, using three pipes (sourceFilter, searchFilter, slice) * * -->
   <div class="cards">
-
-    @for (article of articleService.allArticles| slice: (page-1) * pageSize : page * pageSize; track article) {
+    @for (article of articleService.allArticles| sourceFilter : limitedSources() | searchFilter: "content" : searchText
+    | slice: (page-1) * pageSize : page * pageSize; track article) {
     <mat-card class="card" appearance="outlined" flex="15" ng-repeat="article of articleService.allArticles">
-
       <img class="card-image" mat-card-image src={{article.urlToImage}}>
       <div class="center-container">
         <mat-card-header>

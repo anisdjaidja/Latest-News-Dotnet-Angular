@@ -4,7 +4,22 @@
   padding: 5rem;
 }
 
+.search-form-field {
+  width: 20%;
+  margin: 1rem;
+}
+
+.filter-chip-list {
+  width: 30%;
+  margin: 1rem;
+}
+
 .center-container {
+  justify-content: center;
+  display: flex;
+}
+
+.forms-container {
   justify-content: center;
   display: flex;
 }
