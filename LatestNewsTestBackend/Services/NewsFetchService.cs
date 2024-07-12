@@ -11,13 +11,14 @@ namespace LatestNewsTestBackend.Services
         private readonly ILogger<NewsFetchService> _logger;
         private readonly NewsContext _dbContext;
         private readonly string _apikey;
-        private const string _apiurl = "https://newsapi.org/v2/top-headlines";
-
+        private const string _apiurl = "https://newsapi.org/v2/everything";
+        private readonly string _defaultArticleImage;
         public NewsFetchService(ILogger<NewsFetchService> logger, IDbContextFactory<NewsContext> dbContextfactory, IConfiguration config)
         {
             _logger = logger;
             _dbContext = dbContextfactory.CreateDbContext();
             _apikey = config.GetValue("ApiKey", " ").ToString();
+            _defaultArticleImage = config.GetValue("PlaceholderImage", " ").ToString();
         }
 
         /// <summary>
@@ -49,17 +50,22 @@ namespace LatestNewsTestBackend.Services
                     /// The Solution is to use linQ query to pass a single reference of same instance for all indentical SOURCEs
                     foreach (var item in newsresponse.articles)
                     {
+                        if (item.title == "[Removed]")
+                            continue;
+                        if (_dbContext.Articles.FirstOrDefault(a => a.title == item.title && a.source == a.source) != null)
+                            continue;
                         if (_dbContext.Sources.Contains(item.source))
                             item.source = _dbContext.Sources.FirstOrDefault(s => s == item.source)!;
+                        await _dbContext.Articles.AddAsync(item);
+                        await _dbContext.SaveChangesAsync();
                     }
-                    await _dbContext.Articles.AddRangeAsync(newsresponse.articles);
-                    await _dbContext.SaveChangesAsync();
+                    
 
                     _logger.LogInformation($"News Fetcher Service Updated {newsresponse.totalResults} new articles");
                 }
                 /// This is a delay to not overload the NEWS API Servers, 
-                /// this background worker will request new records every X hours, observe "FromHours(5)"
-                await Task.Delay(((int)TimeSpan.FromHours(5).TotalMilliseconds), cancellationToken);
+                /// this background worker will request new records every X hours, observe "FromHours(1)"
+                await Task.Delay(((int)TimeSpan.FromHours(1).TotalMilliseconds), cancellationToken);
             }
         }
 
@@ -74,9 +80,9 @@ namespace LatestNewsTestBackend.Services
         {
             HttpResponseMessage response;
             if (latestdate != null)
-                response = await client.GetAsync($"?from={latestdate}&language=en&apiKey={_apikey}");
+                response = await client.GetAsync($"?from={latestdate}&q=a&apiKey={_apikey}");
             else
-                response = await client.GetAsync($"?language=en&apiKey={_apikey}");
+                response = await client.GetAsync($"?q=a&apiKey={_apikey}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -90,6 +96,8 @@ namespace LatestNewsTestBackend.Services
                 var body = JsonConvert.DeserializeObject<NewsFetchResponse>(dataset);
                 foreach (var item in body.articles)
                 {
+                    if (item.urlToImage == null)
+                        item.urlToImage = _defaultArticleImage;
                     if (string.IsNullOrWhiteSpace(item.source.id))
                     {
                         var newID = item.source.name.ToLower().Replace(' ', '-');

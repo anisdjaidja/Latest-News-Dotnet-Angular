@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   constructor(private httpclient: HttpClient, public articleService: ArticleService) { }
 
   ngOnInit(): void {
-    this.httpclient.get<Article[]>('https://localhost:7036/News/GetAll')
+    this.httpclient.get<Article[]>('https://localhost:7036/News/getall')
       .subscribe(result => {
         this.articleService.allArticles = result;
         console.log(this.articleService.allArticles);

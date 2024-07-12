@@ -21,6 +21,12 @@ namespace LatestNewsTestBackend.Services
             /// explicitly sets an attached entity to be loaded
             return await dbContext.Articles.Include(a => a.source).ToListAsync();
         }
+        public async Task<List<NewsSource>> GetAllSources()
+        {
+            /// The Include() operator is introduced in EF Core 8 with lazy load, 
+            /// explicitly sets an attached entity to be loaded
+            return await dbContext.Sources.ToListAsync();
+        }
         #endregion
     }
 }

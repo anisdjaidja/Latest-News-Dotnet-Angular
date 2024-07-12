@@ -10,7 +10,7 @@
   <div class="Title-container">
     <p>Times - Belsons</p>
   </div>
-  <div class="pagination-container">
+  <div class="center-container">
     <ngb-pagination size="lg" [(page)]="page" [pageSize]="pageSize"
       [collectionSize]="articleService.allArticles.length" />
 
@@ -21,14 +21,17 @@
     <mat-card class="card" appearance="outlined" flex="15" ng-repeat="article of articleService.allArticles">
 
       <img class="card-image" mat-card-image src={{article.urlToImage}}>
-      <mat-card-header>
-        <mat-card-title>
-          <h1>
-            {{ article.title }}
-          </h1>
-        </mat-card-title>
-        <mat-card-subtitle>{{ article.publishedAt }}</mat-card-subtitle>
-      </mat-card-header>
+      <div class="center-container">
+        <mat-card-header>
+          <mat-card-title>
+            <h1>
+              {{ article.title }}
+            </h1>
+          </mat-card-title>
+          <mat-card-subtitle>{{ article.publishedAt }}</mat-card-subtitle>
+        </mat-card-header>
+      </div>
+
       <p class="card-content">
         {{ article.description }}
       </p>

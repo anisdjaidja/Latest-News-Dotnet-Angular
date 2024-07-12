@@ -2,6 +2,7 @@ using LatestNewsTestBackend.Models;
 using LatestNewsTestBackend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace LatestNewsTestBackend.Controllers
 {
@@ -18,11 +19,31 @@ namespace LatestNewsTestBackend.Controllers
         }
 
 
-        // GET all
-        [HttpGet(template: "GetAll")]
-        public IEnumerable<NewsArticle>? Get()
+        // GET all Articles
+        [HttpGet(template: "getall")]
+        public IActionResult Get()
         {
-            return _newsService.GetAllNews().Result;
+            var news = _newsService.GetAllNews().Result;
+            if(news.Count == 0)
+            {
+                _logger.LogWarning("GetAllArticles Endpoint Responded with 204NoContent");
+                return NoContent();
+            }
+            _logger.LogInformation("GetAllArticles Endpoint Responded with 200OK");
+            return Ok(news);
+        }
+        // GET all Articles
+        [HttpGet(template: "getall/sources")]
+        public IActionResult GetSources()
+        {
+            var sources = _newsService.GetAllSources().Result;
+            if (sources.Count == 0)
+            {
+                _logger.LogWarning("GetAllArticles Endpoint Responded with 204NoContent");
+                return NoContent();
+            }
+            _logger.LogInformation("GetAllArticles Endpoint Responded with 200OK");
+            return Ok(sources);
         }
     }
 }
