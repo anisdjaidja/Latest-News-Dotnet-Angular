@@ -51,11 +51,7 @@ export class AppComponent implements OnInit {
     public articleService: ArticleService,) { }
 
   ngOnInit(): void {
-    this.httpclient.get<Article[]>('https://localhost:7036/News/getall')
-      .subscribe(result => {
-        this.articleService.allArticles = result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());;
-        console.log(this.articleService.allArticles);
-      })
+    this.articleService.requestNews();
   }
   protected onInput(event: Event) {
     this.searchText = (event.target as HTMLInputElement).value;

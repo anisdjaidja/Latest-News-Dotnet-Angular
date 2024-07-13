@@ -12,3 +12,8 @@ export interface Article {
 
   source: Source,
 }
+
+export interface ArticlesResponse {
+  latestID: number
+  articles: Array<Article>;
+}

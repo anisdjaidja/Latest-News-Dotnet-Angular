@@ -1,3 +1,4 @@
+using CacheCow.Server.Core.Mvc;
 using LatestNewsTestBackend.Models;
 using LatestNewsTestBackend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -21,19 +22,35 @@ namespace LatestNewsTestBackend.Controllers
 
         // GET all Articles
         [HttpGet(template: "getall")]
+        [HttpCacheFactory(300)]
         public IActionResult Get()
         {
             var news = _newsService.GetAllNews().Result;
-            if(news.Count == 0)
+            if(news.Count() == 0)
             {
                 _logger.LogWarning("GetAllArticles Endpoint Responded with 204NoContent");
                 return NoContent();
             }
             _logger.LogInformation("GetAllArticles Endpoint Responded with 200OK");
-            return Ok(news);
+            return Ok(new NewsResponse() { latestID = news.Max(a => a.id), articles = news.ToArray()} );
+        }
+        // GET all Articles
+        [HttpGet(template: "getall/{lastID}")]
+        [HttpCacheFactory(300)]
+        public IActionResult Get(int lastID)
+        {
+            var news = _newsService.GetAllNews(lastID).Result;
+            if (news.Count() == 0)
+            {
+                _logger.LogWarning("GetAllArticles Endpoint Responded with 204NoContent");
+                return NoContent();
+            }
+            _logger.LogInformation("GetAllArticles Endpoint Responded with 200OK");
+            return Ok(new NewsResponse() { latestID = news.Max(a => a.id), articles = news.ToArray() });
         }
         // GET all Articles
         [HttpGet(template: "getall/sources")]
+        [HttpCacheFactory(300)]
         public IActionResult GetSources()
         {
             var sources = _newsService.GetAllSources().Result;

@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using LatestNewsTestBackend.Models;
 using Newtonsoft.Json;
 using LatestNewsTestBackend.DataAcess;
+using Microsoft.Extensions.Logging;
 
 namespace LatestNewsTestBackend.Services
 {
@@ -52,9 +53,9 @@ namespace LatestNewsTestBackend.Services
                     {
                         if (item.title == "[Removed]")
                             continue;
-                        if (_dbContext.Articles.FirstOrDefault(a => a.title == item.title && a.source == a.source) != null)
+                        if (await _dbContext.Articles.FirstOrDefaultAsync(a => a.title == item.title && a.source == a.source) != null)
                             continue;
-                        if (_dbContext.Sources.Contains(item.source))
+                        if (await _dbContext.Sources.ContainsAsync(item.source))
                             item.source = _dbContext.Sources.FirstOrDefault(s => s == item.source)!;
                         await _dbContext.Articles.AddAsync(item);
                         await _dbContext.SaveChangesAsync();
@@ -110,7 +111,7 @@ namespace LatestNewsTestBackend.Services
         }
         private async Task<DateTime?> FindLatestStoredArticleDate()
         {
-            if (_dbContext.Articles.Count() <= 0) { return null; }
+            if (await _dbContext.Articles.CountAsync() <= 0) { return null; }
             return await _dbContext.Articles.MaxAsync(x => x.publishedAt);
         }
 

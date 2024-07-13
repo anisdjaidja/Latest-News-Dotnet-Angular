@@ -35,4 +35,10 @@ namespace LatestNewsTestBackend.Models
         [ForeignKey(nameof(source))]
         public string? sourceId { get; set; }
     }
+
+    public class NewsResponse
+    {
+        public int latestID { get; set; }
+        public NewsArticle[] articles { get; set; }
+    }
 }

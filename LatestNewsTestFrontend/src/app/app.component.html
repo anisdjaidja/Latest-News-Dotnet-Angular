@@ -44,7 +44,7 @@
 
   <!-- * * News gallery, using three pipes (sourceFilter, searchFilter, slice) * * -->
   <div class="cards">
-    @for (article of articleService.allArticles| sourceFilter : limitedSources() | searchFilter: "content" : searchText
+    @for (article of articleService.allArticles| sourceFilter : limitedSources() | searchFilter: "title" : searchText
     | slice: (page-1) * pageSize : page * pageSize; track article) {
     <mat-card class="card" appearance="outlined" flex="15" ng-repeat="article of articleService.allArticles">
       <img class="card-image" mat-card-image src={{article.urlToImage}}>

@@ -1,3 +1,5 @@
+using CacheCow.Server;
+using CacheCow.Server.Core.Mvc;
 using LatestNewsTestBackend.DataAcess;
 using LatestNewsTestBackend.Services;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,7 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:4200");
         });
 });
+builder.Services.AddHttpCachingMvc();
 // Add services to the container.
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 /// Adding a DBContext factory instead of DbContext 
@@ -34,6 +37,7 @@ builder.Services.AddDbContextFactory<NewsContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLServer"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
+    options.LogTo(Console.WriteLine, LogLevel.Warning);
 });
 builder.Services.AddHostedService<NewsFetchService>();
 builder.Services.AddSingleton<NewsService>();
