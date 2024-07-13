@@ -6,7 +6,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 // Local imports
 import { ArticleService } from './Services/article.service';
-import { Article } from './Models/article.model';
 import { SearchFilterPipe } from './search-filter.pipe';
 import { SourceFilterPipe } from './source-filter.pipe';
 /// UI imports

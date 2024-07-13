@@ -1,7 +1,6 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Article, ArticlesResponse } from '../Models/article.model';
 import { HttpClient } from '@angular/common/http';
-import { last } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +31,7 @@ export class ArticleService {
 
           })
       } catch (error) {
-        console.log("No updates found, loading from cache only")
+        console.log("204 No updates found, loading from cache only")
       }
 
       return;
