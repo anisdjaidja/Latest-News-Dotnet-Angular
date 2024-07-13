@@ -16,6 +16,7 @@ The Latest News Platform provides an .Net Server that serves latest news RESTful
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="CacheCow.Server.Core.Mvc" Version="2.13.1" />
 ```
 If you are using VS Code, install these one by one in the terminal using this command ```nuget install <packageID | configFilePath> [options]```, consult officail docs : https://learn.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-install
 
@@ -43,6 +44,9 @@ If you are Using VS Studio, make sure you have the latest .net8 release and usua
 
 ```
 Replace the values between tags '<>' with your own, you can set a custom Placeholder Image for the server to put into articles that come without image url.
+
+### Database partitioning
+Our choice of EF Core leaves us without any practical ways to partition the DB (this was realized later into the project), so this feature was dropped until a solution is found.
 
 ### Background worker - news fetcher
 Upon starting the server, a background worker thread will start on it own, calling the News API in a loop and updating the server database with the latest found news articles with their sources.
@@ -78,48 +82,82 @@ This is an internal server, there is no public access authentication.
 #### Get All News ```/api/News/getall```
 Response
 ``` json
-[
-  {
-    "id": 827,
-    "title": "The Boys Season 4 Introduces A New Villain With A Familiar Power",
-    "author": "staff@slashfilm.com (Devin Meenan)",
-    "description": "Let's talk about the latest villain to pop up on The Boys season 4. Beware of spoilers.",
-    "url": "https://www.slashfilm.com/1617656/the-boys-season-4-introduces-new-villain/",
-    "urlToImage": "https://www.slashfilm.com/img/gallery/the-boys-season-4-introduces-a-new-villain-with-a-familiar-power/l-intro-1720453574.jpg",
-    "publishedAt": "2024-07-11T17:00:00",
-    "content": "The villains of manga/anime \"Fullmetal Alchemist\" are homunculi named after the seven deadly sins. Envy is a shapeshifter, naturally. Since their sin is all about desiring what others have, they can … [+1634 chars]",
-    "source": {
-      "id": "/film",
-      "name": "/FILM",
-      "description": null,
-      "url": null,
-      "category": null,
-      "language": null,
-      "country": null
-    },
-    "sourceId": "/film"
-  },
-  {
-    "id": 872,
-    "title": "The Galaxy Ring won’t require a monthly subscription",
-    "author": "Andrew Romero",
-    "description": "One of the main concerns that cropped up prior to the Galaxy Ring launch was that Samsung may require users to subscribe in order to use the ring’s features. As it stands, Samsung does not plan on offering a subscription-locked set of features for the Galaxy …",
-    "url": "http://9to5google.com/2024/07/11/galaxy-ring-wont-require-subscription/",
-    "urlToImage": "https://i0.wp.com/9to5google.com/wp-content/uploads/sites/4/2024/07/Samsung-Galaxy-Ring-v1.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
-    "publishedAt": "2024-07-11T17:11:19",
-    "content": "One of the main concerns that cropped up prior to the Galaxy Ring launch was that Samsung may require users to subscribe in order to use the ring’s features. As it stands, Samsung does not plan on of… [+2351 chars]",
-    "source": {
-      "id": "9to5google.com",
-      "name": "9to5google.com",
-      "description": null,
-      "url": null,
-      "category": null,
-      "language": null,
-      "country": null
-    },
-    "sourceId": "9to5google.com"
-  }
-]
+{
+	"lastID": 872,
+	[
+	  
+	  {
+	    "id": 827,
+	    "title": "The Boys Season 4 Introduces A New Villain With A Familiar Power",
+	    "author": "staff@slashfilm.com (Devin Meenan)",
+	    "description": "Let's talk about the latest villain to pop up on The Boys season 4. Beware of spoilers.",
+	    "url": "https://www.slashfilm.com/1617656/the-boys-season-4-introduces-new-villain/",
+	    "urlToImage": "https://www.slashfilm.com/img/gallery/the-boys-season-4-introduces-a-new-villain-with-a-familiar-power/l-intro-1720453574.jpg",
+	    "publishedAt": "2024-07-11T17:00:00",
+	    "content": "The villains of manga/anime \"Fullmetal Alchemist\" are homunculi named after the seven deadly sins. Envy is a shapeshifter, naturally. Since their sin is all about desiring what others have, they can … [+1634 chars]",
+	    "source": {
+	      "id": "/film",
+	      "name": "/FILM",
+	      "description": null,
+	      "url": null,
+	      "category": null,
+	      "language": null,
+	      "country": null
+	    },
+	    "sourceId": "/film"
+	  },
+	  {
+	    "id": 872,
+	    "title": "The Galaxy Ring won’t require a monthly subscription",
+	    "author": "Andrew Romero",
+	    "description": "One of the main concerns that cropped up prior to the Galaxy Ring launch was that Samsung may require users to subscribe in order to use the ring’s features. As it stands, Samsung does not plan on offering a subscription-locked set of features for the Galaxy …",
+	    "url": "http://9to5google.com/2024/07/11/galaxy-ring-wont-require-subscription/",
+	    "urlToImage": "https://i0.wp.com/9to5google.com/wp-content/uploads/sites/4/2024/07/Samsung-Galaxy-Ring-v1.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
+	    "publishedAt": "2024-07-11T17:11:19",
+	    "content": "One of the main concerns that cropped up prior to the Galaxy Ring launch was that Samsung may require users to subscribe in order to use the ring’s features. As it stands, Samsung does not plan on of… [+2351 chars]",
+	    "source": {
+	      "id": "9to5google.com",
+	      "name": "9to5google.com",
+	      "description": null,
+	      "url": null,
+	      "category": null,
+	      "language": null,
+	      "country": null
+	    },
+	    "sourceId": "9to5google.com"
+	  }
+	]
+}
+```
+#### Get All News Starting from provided ID ```/api/News/getall/{LastID}```
+Response
+``` json
+{
+	"lastID": 872,
+	[
+	  
+	  {
+	    "id": 827,
+	    "title": "The Boys Season 4 Introduces A New Villain With A Familiar Power",
+	    "author": "staff@slashfilm.com (Devin Meenan)",
+	    "description": "Let's talk about the latest villain to pop up on The Boys season 4. Beware of spoilers.",
+	    "url": "https://www.slashfilm.com/1617656/the-boys-season-4-introduces-new-villain/",
+	    "urlToImage": "https://www.slashfilm.com/img/gallery/the-boys-season-4-introduces-a-new-villain-with-a-familiar-power/l-intro-1720453574.jpg",
+	    "publishedAt": "2024-07-11T17:00:00",
+	    "content": "The villains of manga/anime \"Fullmetal Alchemist\" are homunculi named after the seven deadly sins. Envy is a shapeshifter, naturally. Since their sin is all about desiring what others have, they can … [+1634 chars]",
+	    "source": {
+	      "id": "/film",
+	      "name": "/FILM",
+	      "description": null,
+	      "url": null,
+	      "category": null,
+	      "language": null,
+	      "country": null
+	    },
+	    "sourceId": "/film"
+	  }
+	]
+}
 ```
 #### Get All sources ```/api/News/getall/sources```
 Response
@@ -163,6 +201,8 @@ Response
   }
 ]
 ```
+### Server-side caching
+This server implements HTTP response caching over 5 minutes, meaning it saves endpoint responses into memory and re-uses them when appropriate, achieved with the open source CachCow library. 
 
 ## Client
 - To build the server on AngularJS 17 you should first install NodeJS https://nodejs.org/en/download/prebuilt-installer
@@ -194,14 +234,16 @@ On the server side, update the CORS policy in *program.cs* to include the client
           });
   });
 ```
+### Client-side caching
+This client implements session storage caching, this is a combined server/client mechanisme, meaning the client first makes a new request for all articles, the server respondes as expected and attach a proprety saying what is the last Article ID in the response array (article IDs are created and incremented in the server so they are pre-sorted by ID), this allows the client to store the response object in Session-Storage and make future requests using that stored LastID to only request the newest articles, reducing load on DB and improving Client responsiveness.
+
 ### Run everything
 Make sure to run both the server and client with - ```ng serve -o``` and ```DotNet Run``` respectively.
 ![Screenshot 2024-07-12 192007](https://github.com/user-attachments/assets/9102a68e-020e-4b2e-bc2a-ce636d31d1f1)
 ![Screenshot 2024-07-12 192115](https://github.com/user-attachments/assets/1fe10105-9627-4e28-b0af-00aad33d8a80)
 ![Screenshot 2024-07-12 192152](https://github.com/user-attachments/assets/e7a5039c-b3c2-4a9c-a11c-964eebc8f55e)
 
-### Disclaimer: this is a test project and not developed with production in mind. Functionalities (even thought very simple) has not been tested by TDD, For any further questions regarding under the hood and api architec
-hture please contact the author.
+### Disclaimer: this is a test project and not developed with production in mind. Functionalities (even thought very simple) has not been tested by TDD, For any further questions regarding under the hood and api architechture please contact the author.
 
 ## Author
 Anis Djaidja
